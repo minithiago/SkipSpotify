@@ -1,32 +1,23 @@
-# SkipSpotify
+## SkipSpotify
 
-Extensión de Chrome (Manifest V3) que detecta los anuncios de audio en
-[Spotify Web](https://open.spotify.com) y los salta.
+Chrome extension (Manifest V3) that detects audio ads on [Spotify Web](https://open.spotify.com) and skips them.
 
-## Cómo funciona
+### How it works
 
-1. **Detección** (`src/content.js`): observa el atributo `data-testadtype` de la barra
-   de reproducción (`[data-testid="now-playing-bar"]`), que vale `ad-type-none` con
-   música y cambia durante un anuncio. Como respaldo busca el subtítulo de anuncio
-   `[data-testid="context-item-info-ad-subtitle"]`.
-2. **Salto** (`src/injected.js`, en el contexto de la página): intercepta los
-   elementos `<audio>`/`<video>` que crea Spotify y, durante el anuncio, los silencia,
-   los pone a velocidad x16 y adelanta el audio hasta el final.
-3. **Silencio garantizado** (`background.js`): silencia la pestaña mientras dura el
-   anuncio y la restaura al terminar (solo si la silenció la extensión).
-4. Si el botón "Siguiente" está habilitado, también lo pulsa.
+- **Detection** (`src/content.js`): monitors the `data-testadtype` attribute of the playback bar (`[data-testid="now-playing-bar"]`), which is `ad-type-none` during music playback and changes when an ad is playing. As a fallback, it looks for the ad subtitle element (`[data-testid="context-item-info-ad-subtitle"]`).
+- **Skipping** (`src/injected.js`, running in the page context): intercepts the `<audio>` and `<video>` elements created by Spotify and, during ads, mutes them, sets the playback speed to 16x, and seeks to the end of the audio.
+- **Guaranteed silence** (`background.js`): mutes the browser tab while the ad is playing and restores the previous state when the ad ends (only if it was muted by the extension).
+- If the **Next** button is enabled, it will also be clicked automatically.
 
-El popup permite activar/desactivar cada parte y muestra cuántos anuncios se han saltado.
+The popup allows enabling/disabling each feature and displays how many ads have been skipped.
 
-## Instalación
+### Installation
 
-1. Abre `chrome://extensions`.
-2. Activa **Modo de desarrollador** (arriba a la derecha).
-3. Pulsa **Cargar descomprimida** y elige esta carpeta.
-4. Recarga la pestaña de Spotify Web.
+- Open `chrome://extensions`.
+- Enable **Developer mode** (top right corner).
+- Click **Load unpacked** and select this folder.
+- Reload the Spotify Web tab.
 
-## Si deja de funcionar
+### If it stops working
 
-Spotify cambia su web a menudo. Los selectores están al principio de
-`src/content.js` (`SELECTORS`); abre la consola en open.spotify.com durante un anuncio
-y busca los mensajes `[SkipSpotify]` para comprobar si se detecta.
+Spotify frequently updates its web interface. The selectors are defined at the beginning of `src/content.js` (`SELECTORS`). Open the console on `open.spotify.com` while an ad is playing and look for `[SkipSpotify]` messages to verify that ad detection is working.
